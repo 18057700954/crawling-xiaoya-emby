@@ -5,26 +5,29 @@ import requests
 import scrapy
 from urllib.parse import unquote
 from ..items import EmbyxiaoyaproItem
-from ..settings import S_PATHS, T_EXT, I_EXT, S_DOMAIN, FILES_STORE
+from ..settings import XIAOYA_EMBY_CONFIG, FILES_STORE
+
+
+# from ..settings import S_PATHS, T_EXT, I_EXT, S_DOMAIN, FILES_STORE
 
 
 class XiaoyaembySpider(scrapy.Spider):
     domains_pool = []
     name = "xiaoyaEmby"
-    EXT = T_EXT + I_EXT
-    allowed_domains = [d.replace("https://", "").replace("/", "") for d in S_DOMAIN]
-    start_urls = ["https://emby.xiaoya.pro/" + i for i in S_PATHS]
+    EXT = XIAOYA_EMBY_CONFIG["T_EXT"] + XIAOYA_EMBY_CONFIG["I_EXT"]
+    allowed_domains = [d.replace("https://", "").replace("/", "") for d in XIAOYA_EMBY_CONFIG["S_DOMAIN"]]
+    start_urls = ["https://emby.xiaoya.pro/" + i for i in XIAOYA_EMBY_CONFIG["S_PATHS"]]
 
     def test_internet_speed(self, url):
         try:
-            response = requests.head(url, timeout=1)
+            response = requests.head(url, timeout=1.2)
             if response.status_code == 200:
                 self.domains_pool.append(url)
         except requests.exceptions.RequestException as e:
             print(f"test_internet_speed -> {str(e)}")
 
     def parse(self, response, **kwargs):
-        [self.test_internet_speed(p) for p in S_DOMAIN]
+        [self.test_internet_speed(p) for p in XIAOYA_EMBY_CONFIG["S_DOMAIN"]]
         if not self.domains_pool:
             self.domains_pool = ["https://emby.xiaoya.pro/"]
         lists = response.xpath("//a/text()").extract()[1::]
@@ -35,11 +38,9 @@ class XiaoyaembySpider(scrapy.Spider):
                 yield scrapy.Request(url, callback=self.parse2, dont_filter=True)
 
     def parse2(self, response):
-        # print(unquote(response.url))
+        print(unquote(response.url))
         ditem = EmbyxiaoyaproItem()
-        ditem["urls"] = []
-        ditem["filename"] = []
-        ditem["filesize"] = []
+        ditem["urls"], ditem["filename"], ditem["filesize"] = [], [], []
         lists = response.xpath("//a/text()").extract()[1::]
         s = response.xpath("//pre/text()").extract()[1::]
         file_size_list = [i.split(" ")[-1][:-2] for i in s]
@@ -52,7 +53,9 @@ class XiaoyaembySpider(scrapy.Spider):
                 elif li.endswith(self.EXT):  # 文件
                     file_path = FILES_STORE + filename
                     url = url.replace("https://emby.xiaoya.pro/", random.choice(self.domains_pool))
-                    if os.path.exists(file_path):  # 文件存在
+                    if li.endswith(".nfo"):
+                        continue
+                    elif os.path.exists(file_path):  # 文件存在
                         file_size = os.path.getsize(file_path)
                         if int(size) != int(file_size):  # 基于文件大小判断更新
                             os.remove(file_path)

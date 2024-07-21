@@ -12,3 +12,8 @@ class EmbyxiaoyaproItem(scrapy.Item):
     urls = scrapy.Field()
     filename = scrapy.Field()
     filesize = scrapy.Field()
+
+
+class XiaoyaStrmItem(scrapy.Item):
+    path = scrapy.Field()
+    content = scrapy.Field()

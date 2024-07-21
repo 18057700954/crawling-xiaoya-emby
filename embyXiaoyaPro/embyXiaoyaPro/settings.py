@@ -20,35 +20,75 @@ HTTPERROR_ALLOWED_CODES = [301, 302, 304]  # 处理其他状态码
 RETRY_ENABLED = True  # 打开重试开关
 RETRY_TIMES = 2  # 重试次数
 
-S_DOMAIN = [
-    "https://emby.xiaoya.pro/",
-    "https://icyou.eu.org/",
-    "https://lanyuewan.cn/",
-    "https://emby.8.net.co/",
-    "https://emby.raydoom.tk/",
-    "https://emby.kaiserver.uk/",
-    "https://embyxiaoya.laogl.top/",
-    "https://emby-data.raydoom.tk/",
-    "https://emby-data.ermaokj.com/",
-    "https://emby-data.poxi1221.eu.org/",
-    "https://emby-data.ermaokj.cn/",
-    "https://emby-data.bdbd.fun/",
-    "https://emby-data.wwwh.eu.org/",
-    "https://emby-data.f1rst.top/",
-    "https://emby-data.ymschh.top/",
-    "https://emby-data.wx1.us.kg/",
-    "https://emby-data.r2s.site/",
-    "https://emby-data.neversay.eu.org/",
-    "https://emby-data.800686.xyz/"
-]
+XIAOYA_EMBY_CONFIG = {
+    "XIAOYA_LOGIN": {"username": "dav", "password": "20030512"},
+    "XIAOYA_ADDRESS": "http://localhost:5678",
+    "SCAN_DIR": [  # 扫描的文件目录
+        "/每日更新"
+    ],
+    "EXCLUDE_DIR": [  # 排除的文件目录
+        "/每日更新/PikPak",
+    ],
+    "SCAN_SAVE_DIR": "C:/PersonalData/docker/emby/media/strm",
+
+    "S_PATHS": [
+        "每日更新/"
+    ],
+    "M_EXT": (".mkv", ".mp4", ".flv", ".wmv"),
+    "T_EXT": (".nfo", ".strm", ".ass", ".srt", ".ssa"),
+    "I_EXT": (".png", ".img", ".jpg"),
+    "S_DOMAIN": [
+        "https://emby.xiaoya.pro/",
+        "https://icyou.eu.org/",
+        "https://lanyuewan.cn/",
+        "https://emby.8.net.co/",
+        "https://emby.raydoom.tk/",
+        "https://emby.kaiserver.uk/",
+        "https://embyxiaoya.laogl.top/",
+        "https://emby-data.raydoom.tk/",
+        "https://emby-data.ermaokj.com/",
+        "https://emby-data.poxi1221.eu.org/",
+        "https://emby-data.ermaokj.cn/",
+        "https://emby-data.bdbd.fun/",
+        "https://emby-data.wwwh.eu.org/",
+        "https://emby-data.f1rst.top/",
+        "https://emby-data.ymschh.top/",
+        "https://emby-data.wx1.us.kg/",
+        "https://emby-data.r2s.site/",
+        "https://emby-data.neversay.eu.org/",
+        "https://emby-data.800686.xyz/"
+    ],
+}
+
+# S_DOMAIN = [
+#     "https://emby.xiaoya.pro/",
+#     "https://icyou.eu.org/",
+#     "https://lanyuewan.cn/",
+#     "https://emby.8.net.co/",
+#     "https://emby.raydoom.tk/",
+#     "https://emby.kaiserver.uk/",
+#     "https://embyxiaoya.laogl.top/",
+#     "https://emby-data.raydoom.tk/",
+#     "https://emby-data.ermaokj.com/",
+#     "https://emby-data.poxi1221.eu.org/",
+#     "https://emby-data.ermaokj.cn/",
+#     "https://emby-data.bdbd.fun/",
+#     "https://emby-data.wwwh.eu.org/",
+#     "https://emby-data.f1rst.top/",
+#     "https://emby-data.ymschh.top/",
+#     "https://emby-data.wx1.us.kg/",
+#     "https://emby-data.r2s.site/",
+#     "https://emby-data.neversay.eu.org/",
+#     "https://emby-data.800686.xyz/"
+# ]
 
 # 爬取的路径
-S_PATHS = [
-    "每日更新/"
-]
+# S_PATHS = [
+#     "每日更新/"
+# ]
 # 爬取文件后缀名
-T_EXT = (".strm", ".ass", ".srt", ".ssa")
-I_EXT = (".png", ".img", ".jpg")
+# T_EXT = (".nfo", ".strm", ".ass", ".srt", ".ssa")
+# I_EXT = (".png", ".img", ".jpg")
 
 # 文件保存路径
 FILES_STORE = "C:/PersonalData/docker/emby/media/xiaoya"
@@ -60,12 +100,12 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 200
+CONCURRENT_REQUESTS = 500
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 0.1
+DOWNLOAD_DELAY = 0.05
 # The download delay setting will honor only one of:
 CONCURRENT_REQUESTS_PER_DOMAIN = 100
 # CONCURRENT_REQUESTS_PER_IP = 256
@@ -103,7 +143,8 @@ DOWNLOADER_MIDDLEWARES = {
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     # "embyXiaoyaPro.pipelines.EmbyxiaoyaproPipeline": 300,
-    "embyXiaoyaPro.pipelines.DownLoadingPipeline": 301
+    "embyXiaoyaPro.pipelines.DownLoadingPipeline": 301,
+    "embyXiaoyaPro.pipelines.XiaoyaToStrmPipeline": 302
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
