@@ -7,10 +7,12 @@ import os.path
 
 from .items import EmbyxiaoyaproItem, XiaoyaStrmItem
 from scrapy.pipelines.files import FilesPipeline
+from tools import sha256_hash
 import scrapy
 
 import aiofiles
 import asyncio
+import hashlib
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 
@@ -46,23 +48,23 @@ class DownLoadingPipeline(FilesPipeline):
 
 
 class XiaoyaToStrmPipeline:
-    def open_spider(self, spider):
-        self.sys = os.name
-
-    def process_item(self, item, spider):
+    async def process_item(self, item, spider):
         if isinstance(item, XiaoyaStrmItem):
-            task = [asyncio.create_task(self.write_file(item["path"][i], item["content"][i])) for i in
-                    range(len(item["path"]))]
-            asyncio.gather(*task)
+            tasks = []
+            for p, c in zip(item["path"], item["content"]):
+                tasks.append(asyncio.create_task(self.write_file(p, c)))
+            done, pending = await asyncio.wait(tasks, return_when=asyncio.ALL_COMPLETED)
+            for task in done:
+                print(task.result())
 
     async def write_file(self, p, content):
-        if self.sys == "nt":
-            p = p.replace("|", "-")
         try:
             rp = p.rfind("/")
             if not os.path.exists(p[:rp]):
                 os.makedirs(p[:rp], exist_ok=True)
             async with aiofiles.open(p, mode='w', encoding="utf-8") as f:
                 await f.write(content)
+            sha = sha256_hash(content)
+            return [p, sha]
         except Exception as e:
             print(f"XiaoyaToStrmPipeline-write_file{str(e)}")

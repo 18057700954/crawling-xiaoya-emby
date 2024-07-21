@@ -21,17 +21,19 @@ RETRY_ENABLED = True  # 打开重试开关
 RETRY_TIMES = 2  # 重试次数
 
 XIAOYA_EMBY_CONFIG = {
+    # 爬取xiaoya alist 生成strm配置
     "XIAOYA_LOGIN": {"username": "dav", "password": "20030512"},
     "XIAOYA_ADDRESS": "http://localhost:5678",
-    "SCAN_DIR": [  # 扫描的文件目录
-        "/每日更新"
+    "SCAN_DIR": [  # 扫描的目录
+        "/每日更新/动漫/国漫/2024"
     ],
     "EXCLUDE_DIR": [  # 排除的文件目录
         "/每日更新/PikPak",
     ],
-    "SCAN_SAVE_DIR": "C:/PersonalData/docker/emby/media/strm",
+    # 爬取emby.xiaoya.pro元数据配置
+    "SCAN_SAVE_DIR": "C:/PersonalData/docker/emby/media/strm",  # strm数据保存路径
 
-    "S_PATHS": [
+    "S_PATHS": [  # 元数据爬取路径
         "每日更新/"
     ],
     "M_EXT": (".mkv", ".mp4", ".flv", ".wmv"),

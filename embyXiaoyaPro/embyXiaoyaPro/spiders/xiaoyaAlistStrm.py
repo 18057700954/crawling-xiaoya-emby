@@ -7,6 +7,7 @@ from ..items import XiaoyaStrmItem
 
 
 class XiaoyaaliststrmSpider(scrapy.Spider):
+    system_platform = os.name
     name = "xiaoyaAlistStrm"
     allowed_domains = [""]
     token = ""
@@ -44,9 +45,7 @@ class XiaoyaaliststrmSpider(scrapy.Spider):
 
     def parse2(self, response):
         body_data = response.meta['body_data']
-        if body_data["path"] in XIAOYA_EMBY_CONFIG["EXCLUDE_DIR"]:
-            print(body_data["path"])
-        else:
+        if body_data["path"] not in XIAOYA_EMBY_CONFIG["EXCLUDE_DIR"]:
             data = json.loads(response.text)["data"]["content"]
             url = XIAOYA_EMBY_CONFIG["XIAOYA_ADDRESS"] + "/api/fs/list"
             header = {"Authorization": f"{self.token}", 'Content-Type': 'application/json; charset=utf-8'}
@@ -67,10 +66,16 @@ class XiaoyaaliststrmSpider(scrapy.Spider):
                                              meta={'body_data': b_data}, callback=self.parse2, encoding="utf-8")
                     else:
                         e = d["name"].rfind(".")
-                        p = f"{XIAOYA_EMBY_CONFIG['SCAN_SAVE_DIR']}{body_data['path']}/{d['name'][:e]}.strm"
-                        c = f"{XIAOYA_EMBY_CONFIG['XIAOYA_ADDRESS']}/d{body_data['path']}/{d['name']}"
-                        if d["name"].endswith(XIAOYA_EMBY_CONFIG["M_EXT"]) and not os.path.exists(p):
+                        p_cache = f"{body_data['path']}/{d['name'][:e]}.strm"
+                        if self.system_platform == "nt":  # 保存的文件名
+                            p = f"{XIAOYA_EMBY_CONFIG['SCAN_SAVE_DIR']}" + p_cache.replace("|", "-").replace(":", "：")
+                        else:
+                            p = f"{XIAOYA_EMBY_CONFIG['SCAN_SAVE_DIR']}{p_cache}"
+                        c = f"{XIAOYA_EMBY_CONFIG['XIAOYA_ADDRESS']}/d{body_data['path']}/{d['name']}"  # 保存的内容
+                        if d["name"].endswith(XIAOYA_EMBY_CONFIG["M_EXT"]) and not os.path.exists(p):  # 判断文件是视频，并且不存在
                             files["path"].append(p)
                             files["content"].append(c)
                 if files["path"]:
                     yield files
+        else:
+            print("已排除：" + body_data["path"])

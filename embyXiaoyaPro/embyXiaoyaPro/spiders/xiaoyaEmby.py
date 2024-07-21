@@ -8,9 +8,6 @@ from ..items import EmbyxiaoyaproItem
 from ..settings import XIAOYA_EMBY_CONFIG, FILES_STORE
 
 
-# from ..settings import S_PATHS, T_EXT, I_EXT, S_DOMAIN, FILES_STORE
-
-
 class XiaoyaembySpider(scrapy.Spider):
     domains_pool = []
     name = "xiaoyaEmby"
