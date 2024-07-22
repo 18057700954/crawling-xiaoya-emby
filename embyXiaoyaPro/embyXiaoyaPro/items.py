@@ -17,3 +17,4 @@ class EmbyxiaoyaproItem(scrapy.Item):
 class XiaoyaStrmItem(scrapy.Item):
     path = scrapy.Field()
     content = scrapy.Field()
+    pathCache = scrapy.Field()
