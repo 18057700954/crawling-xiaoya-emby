@@ -1,13 +1,14 @@
 import os
+import argparse
 
 from scrapy.cmdline import execute
 
 if __name__ == '__main__':
-    spiders = os.listdir("./embyXiaoyaPro/spiders")[::-1][2:]
-    [print("{:<6}{}".format(s, spiders[s])) for s in range(len(spiders))]
-    print("[请输入序号] :", end="")
-    a = input("")
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument('-s', '--spider', required=False, help='spider', default='xiaoyaEmby')
+    args = arg_parser.parse_args()
+    print(args.spider)
     try:
-        execute(f"scrapy crawl {spiders[int(a)][:-3]}".split())
+        execute(f"scrapy crawl {args.spider}".split())
     except Exception as e:
-        print(f"你TM傻逼吧！只能选0-{len(spiders)}")
+        print(f"{str(e)}")

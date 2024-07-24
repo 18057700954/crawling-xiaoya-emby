@@ -105,20 +105,21 @@ class EmbyxiaoyaproDownloaderMiddleware:
 
 
 class ProxyDownloaderMiddleware:
-    _proxy = ('o995.kdltps.com', '15818')
+    _proxy = ('127.0.0.1', '60001')
 
     def process_request(self, request, spider):
         # 用户名密码认证
-        username = "t12086158269883"
-        password = "ktzioty2"
-        request.meta['proxy'] = "http://%(user)s:%(pwd)s@%(proxy)s/" % {"user": username, "pwd": password,
-                                                                        "proxy": ':'.join(
-                                                                            ProxyDownloaderMiddleware._proxy)}
+        username = ""
+        password = ""
+        request.meta['proxy'] = "http://127.0.0.1:60001"
+        # request.meta['proxy'] = "http://%(user)s:%(pwd)s@%(proxy)s/" % {"user": username, "pwd": password,
+        #                                                                 "proxy": ':'.join(
+        #                                                                     ProxyDownloaderMiddleware._proxy)}
 
         # 白名单认证
         # request.meta['proxy'] = "http://%(proxy)s/" % {"proxy": proxy}
 
-        request.headers["Connection"] = "close"
+        # request.headers["Connection"] = "close"
         return None
 
     def process_exception(self, request, exception, spider):

@@ -35,7 +35,7 @@ class XiaoyaembySpider(scrapy.Spider):
                 yield scrapy.Request(url, callback=self.parse2, dont_filter=True)
 
     def parse2(self, response):
-        print(unquote(response.url))
+        # print(unquote(response.url))
         ditem = EmbyxiaoyaproItem()
         ditem["urls"], ditem["filename"], ditem["filesize"] = [], [], []
         lists = response.xpath("//a/text()").extract()[1::]
@@ -47,12 +47,11 @@ class XiaoyaembySpider(scrapy.Spider):
                 filename = unquote(url.replace("https://emby.xiaoya.pro", ""))
                 if li.endswith("/"):  # 目录
                     yield scrapy.Request(url, callback=self.parse2, dont_filter=True)
-                elif li.endswith(self.EXT):  # 文件
+                # elif li.endswith(self.EXT) and not li.endswith(".nfo"):  # 文件
+                elif li.endswith(".strm") and not li.endswith(".nfo"):  # 文件
                     file_path = FILES_STORE + filename
                     url = url.replace("https://emby.xiaoya.pro/", random.choice(self.domains_pool))
-                    if li.endswith(".nfo"):
-                        continue
-                    elif os.path.exists(file_path):  # 文件存在
+                    if os.path.exists(file_path):  # 文件存在
                         file_size = os.path.getsize(file_path)
                         if int(size) != int(file_size):  # 基于文件大小判断更新
                             os.remove(file_path)
@@ -63,6 +62,8 @@ class XiaoyaembySpider(scrapy.Spider):
                         ditem["urls"].append(url)
                         ditem["filename"].append(filename)
                         ditem["filesize"].append(size)
+                else:
+                    continue
             yield ditem
         except Exception as e:
             print(f"parse2->{str(e)}")

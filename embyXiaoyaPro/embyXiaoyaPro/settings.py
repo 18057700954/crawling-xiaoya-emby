@@ -24,14 +24,17 @@ XIAOYA_EMBY_CONFIG = {
     # 爬取xiaoya alist 生成strm配置
     "XIAOYA_LOGIN": {"username": "dav", "password": "20030512"},
     "XIAOYA_ADDRESS": "http://localhost:5678",
+    "token": "",
     "SCAN_DIR": [  # 扫描的目录
-        "/每日更新/动漫/国漫/2024"
+        "/每日更新/动漫/国漫/2024/白色闪电"
     ],
-    "EXCLUDE_DIR": [  # 排除的文件目录
+    "EXCLUDE_DIR": [  # 排除的目录
         "/每日更新/PikPak",
+        "/每日更新/动漫/国漫/所有"
     ],
     # 爬取emby.xiaoya.pro元数据配置
-    "SCAN_SAVE_DIR": "C:/PersonalData/docker/emby/media/strm",  # strm数据保存路径
+    "SCAN_SAVE_DIR": "C:\PersonalData\docker\emby\media\strm",  # strm 文件 保存路径
+
 
     "S_PATHS": [  # 元数据爬取路径
         "每日更新/"
@@ -62,37 +65,6 @@ XIAOYA_EMBY_CONFIG = {
     ],
 }
 
-# S_DOMAIN = [
-#     "https://emby.xiaoya.pro/",
-#     "https://icyou.eu.org/",
-#     "https://lanyuewan.cn/",
-#     "https://emby.8.net.co/",
-#     "https://emby.raydoom.tk/",
-#     "https://emby.kaiserver.uk/",
-#     "https://embyxiaoya.laogl.top/",
-#     "https://emby-data.raydoom.tk/",
-#     "https://emby-data.ermaokj.com/",
-#     "https://emby-data.poxi1221.eu.org/",
-#     "https://emby-data.ermaokj.cn/",
-#     "https://emby-data.bdbd.fun/",
-#     "https://emby-data.wwwh.eu.org/",
-#     "https://emby-data.f1rst.top/",
-#     "https://emby-data.ymschh.top/",
-#     "https://emby-data.wx1.us.kg/",
-#     "https://emby-data.r2s.site/",
-#     "https://emby-data.neversay.eu.org/",
-#     "https://emby-data.800686.xyz/"
-# ]
-
-# 爬取的路径
-# S_PATHS = [
-#     "每日更新/"
-# ]
-# 爬取文件后缀名
-# T_EXT = (".nfo", ".strm", ".ass", ".srt", ".ssa")
-# I_EXT = (".png", ".img", ".jpg")
-
-# 文件保存路径
 FILES_STORE = "C:/PersonalData/docker/emby/media/xiaoya"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -126,7 +98,7 @@ COOKIES_ENABLED = False
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 # SPIDER_MIDDLEWARES = {
-#    "embyXiaoyaPro.middlewares.ProxyDownloaderMiddleware": 100,
+#     "embyXiaoyaPro.middlewares.ProxyDownloaderMiddleware": 100,
 # }
 
 # Enable or disable downloader middlewares
