@@ -4,7 +4,7 @@
 
 # 执行 crawling
 
-    通过运行embyXiaoyaPro/run.py文件选择 0
+    通过运行embyXiaoyaPro/run.py文件
 
 # 配置
 
