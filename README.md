@@ -4,7 +4,8 @@
 
 # 执行 crawling
 
-    通过运行embyXiaoyaPro/run.py文件
+    运行embyXiaoyaPro/run.py -s=xiaoyaAlistStrm
+    
 
 # 配置
 
