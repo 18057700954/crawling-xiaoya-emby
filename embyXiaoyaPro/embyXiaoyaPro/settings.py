@@ -16,7 +16,7 @@ LOG_LEVEL = "ERROR"  # ERROR INFO DEBUG
 DOWNLOAD_TIMEOUT = 180  # 下载超时时间
 REACTOR_THREADPOOL_MAXSIZE = 100  # scrapy通过一个线程池来进行DNS查询，增大这个线程池一般也可以提高scrapy性能。
 MEDIA_ALLOW_REDIRECTS = True  # 处理重定向
-HTTPERROR_ALLOWED_CODES = [301, 302, 304]  # 处理其他状态码
+# HTTPERROR_ALLOWED_CODES = [301, 302, 304]  # 处理其他状态码
 RETRY_ENABLED = True  # 打开重试开关
 RETRY_TIMES = 2  # 重试次数
 
@@ -25,18 +25,21 @@ XIAOYA_EMBY_CONFIG = {
     "XIAOYA_LOGIN": {"username": "dav", "password": "20030512"},
     "XIAOYA_ADDRESS": "http://localhost:5678",
     "token": "",
-    "SCAN_DIR": [  # 扫描的目录
-        "/每日更新/动漫/国漫/2024/白色闪电"
+    "SCAN_DIR": [  # 扫描的地址
+        "/每日更新/动漫/国漫/2024"
     ],
     "EXCLUDE_DIR": [  # 排除的目录
         "/每日更新/PikPak",
-        "/每日更新/动漫/国漫/所有"
+        "/每日更新/爽文短剧",
+        "/每日更新/音乐",
+        "/每日更新/纪录片",
+        "/每日更新/动漫/国漫/所有",
+        "/每日更新/动漫/日本/所有",
     ],
     # 爬取emby.xiaoya.pro元数据配置
-    "SCAN_SAVE_DIR": "C:\PersonalData\docker\emby\media\strm",  # strm 文件 保存路径
+    "SCAN_SAVE_DIR": "C:\PersonalData\docker\emby\media\\xiaoya",  # strm 文件 保存路径
 
-
-    "S_PATHS": [  # 元数据爬取路径
+    "S_PATHS": [  # 网站元数据爬取开始路径
         "每日更新/"
     ],
     "M_EXT": (".mkv", ".mp4", ".flv", ".wmv"),
