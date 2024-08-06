@@ -18,7 +18,8 @@ class XiaoyaaliststrmSpider(scrapy.Spider):
     api_list_url = XIAOYA_EMBY_CONFIG["XIAOYA_ADDRESS"] + "/api/fs/list"
     api_login_url = XIAOYA_EMBY_CONFIG["XIAOYA_ADDRESS"] + "/api/auth/login"
 
-    async def create_table(self, db, table_name, create_sql):
+    @staticmethod
+    async def create_table(db, table_name, create_sql):
         try:
             async with db.execute(
                     f'''SELECT name FROM sqlite_master where type="table" and name="{table_name}";''') as cursor:

@@ -3,10 +3,8 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://docs.scrapy.org/en/latest/topics/i
 # tem-pipeline.html
-import logging
+from logging import error
 import os.path
-import re
-import shutil
 from distutils import dir_util
 
 import aiosqlite
@@ -17,7 +15,6 @@ import scrapy
 import asyncio
 import sqlite3
 import aiofiles
-from sqlite3 import OperationalError
 from .settings import XIAOYA_EMBY_CONFIG
 from .tools import sha256_hash
 
@@ -57,6 +54,10 @@ class DownLoadingPipeline(FilesPipeline):
 
 class XiaoyaToStrmPipeline:
 
+    def __init__(self):
+        self.root_dir = None
+        self.db = None
+
     def open_spider(self, spider):
         if spider.name == "xiaoyaAlistStrm":
             self.root_dir = XIAOYA_EMBY_CONFIG["SCAN_SAVE_DIR"]
@@ -94,19 +95,19 @@ class XiaoyaToStrmPipeline:
                         # shutil.copytree(root, new_path)
                         # shutil.rmtree(root)
                     except FileExistsError:
-                        logging.error(f"目标目录 {new_path} 已存在")
+                        error(f"目标目录 {new_path} 已存在")
                         # print(f"目标目录 {new_path} 已存在")
                     except Exception as e:
-                        logging.error(f"{str(e)}")
+                        error(f"{str(e)}")
                         print(f"{str(e)}")
                     for r2, d2, f2 in os.walk(new_path):
                         try:
-                            strmFileOne = [j for j in f2 if j.endswith(".strm")][0]
+                            strm_file_one = [j for j in f2 if j.endswith(".strm")][0]
                         except IndexError:
-                            strmFileOne = None
-                        if strmFileOne:
-                            with open(os.path.join(r2, strmFileOne), "r", encoding="utf-8") as f:
-                                # print("strmFile",r2, strmFileOne)
+                            strm_file_one = None
+                        if strm_file_one:
+                            with open(os.path.join(r2, strm_file_one), "r", encoding="utf-8") as f:
+                                # print("strmFile",r2, strm_file_one)
                                 con = f.read()
                                 con_add = con.replace("http://xiaoya.host:5678/d", "")
                                 con_add, _ = os.path.split(con_add)
@@ -119,21 +120,22 @@ class XiaoyaToStrmPipeline:
 
     async def process_item(self, item, spider):
         if isinstance(item, XiaoyaStrmItem):
-            async with aiosqlite.connect("./StrmFiles.db") as Strmdb:
+            async with aiosqlite.connect("./StrmFiles.db") as Strm_db:
                 tasks = []
                 for c, pc in zip(item["content"], item["pathCache"]):
-                    tasks.append(asyncio.create_task(self.write_file(c, pc, Strmdb)))
+                    tasks.append(asyncio.create_task(self.write_file(c, pc, Strm_db)))
                 done, pending = await asyncio.wait(tasks, return_when=asyncio.ALL_COMPLETED)
                 # 插入数据库
                 sql = '''insert or replace into files (filename, md5) values '''
                 for task in done:
                     print(f"download succeed {task.result()[0]}")
                     sql += f'("{task.result()[0]}", "{task.result()[1]}"),'
-                await Strmdb.execute(sql[:-1])
-                await Strmdb.commit()
+                await Strm_db.execute(sql[:-1])
+                await Strm_db.commit()
         return item
 
-    async def write_file(self, content, strm_file, Strmdb):
+    @staticmethod
+    async def write_file(content, strm_file, Strmdb):
         # print(strm_file)
         strm_file_path, strm_file_name = os.path.split(strm_file)
         async with Strmdb.execute(f'select * from info where remoteAdd="{strm_file_path}"') as cur:
@@ -147,6 +149,7 @@ class XiaoyaToStrmPipeline:
             # r_save_file_name = save_file_name
             if os.name == "nt":
                 save_file_name = save_file_name.replace("|", "")
+            save_file_name = save_file_name.replace("_Tacit0924", "")
             try:
                 save_file_path, _ = os.path.split(save_file_name)
                 if not os.path.exists(save_file_path):

@@ -37,7 +37,7 @@ XIAOYA_EMBY_CONFIG = {
         "/每日更新/动漫/日本/所有",
     ],
     # 爬取emby.xiaoya.pro元数据配置
-    "SCAN_SAVE_DIR": "C:\PersonalData\docker\emby\media\\xiaoya",  # strm 文件 保存路径
+    "SCAN_SAVE_DIR": "E:\docker\emby\media\\xiaoya",  # strm 文件 保存路径
 
     "S_PATHS": [  # 网站元数据爬取开始路径
         "每日更新/"
